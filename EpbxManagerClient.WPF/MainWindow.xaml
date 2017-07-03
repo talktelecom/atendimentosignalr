@@ -1,0 +1,95 @@
+﻿<Window x:Class="EpbxManagerClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EpbxManagerClient"
+        mc:Ignorable="d"
+        ResizeMode="CanMinimize"   
+        Title="EpbxManager - Exemplo" Height="978.176" Width="382.492">
+    
+    <Window.Resources>
+        <local:InverseBooleanConverter x:Key="InvertBoolean" />
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+    
+    <Grid>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top"
+                    Margin="10,10,0,0">
+            <GroupBox Header="Login" HorizontalAlignment="Left" Name="LogarGroupBox"
+                  Visibility="{Binding IsLogado, Converter={StaticResource InvertBoolean}}"
+                  VerticalAlignment="Top" Height="367" Width="352">
+
+                <Grid>
+                    <Label x:Name="lblUsuario" Content="Usuário" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="txtUsuario" HorizontalAlignment="Left" Height="23" Margin="20,50,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276"/>
+
+                    <Label x:Name="lblSenha" Content="Senha" HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top"/>
+                    <PasswordBox x:Name="txtSenha" HorizontalAlignment="Left" Height="23" Margin="20,130,0,0" VerticalAlignment="Top" Width="276"/>
+
+                    <RadioButton x:Name="optCtiIp" Content="CTI IP" HorizontalAlignment="Left" Margin="20,179,0,0" VerticalAlignment="Top" Width="161"
+                             GroupName="optIpOrHd" IsChecked="True" Click="optCtiIp_Click" />
+                    <RadioButton x:Name="optCtiHd" Content="CTI HD" HorizontalAlignment="Left" Margin="234,179,0,0" VerticalAlignment="Top" Width="161"
+                             GroupName="optIpOrHd" Click="optCtiHd_Click" />
+
+                    <Label x:Name="lblIpOrRamal" Content="IP, Ramal ou Id PA" HorizontalAlignment="Left" Margin="20,207,0,0" VerticalAlignment="Top"/>
+
+                    <TextBox x:Name="txtIpOrRamal" HorizontalAlignment="Left" Height="23" Margin="20,237,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276"/>
+
+                    <Button x:Name="btnLogar" Content="Logar" HorizontalAlignment="Left" Margin="20,290,0,0" 
+                        IsDefault="True"
+                        VerticalAlignment="Top" Width="276" Click="btnLogar_Click" />
+
+                </Grid>
+            </GroupBox>
+            
+            <GroupBox x:Name="RamalLogadoGroup" Header="Ramal Logado" HorizontalAlignment="Left" Margin="0,0,0,0" 
+                  VerticalAlignment="Top" Height="241" Width="352"
+                  Visibility="{Binding IsLivre, Converter={StaticResource BoolToVis}}">
+                <Grid>
+
+                    <Label x:Name="lblDiscar" Content="Discar para" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="lblStatusAtivo" Content="Status" HorizontalAlignment="Left" Margin="290,4,0,0" VerticalAlignment="Top"/>
+                    
+                    <TextBox x:Name="txtDiscarNumero" HorizontalAlignment="Left" Height="23" Margin="20,50,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="276"/>
+
+                    <CheckBox x:Name="chkDiscarExterno" Margin="20,80,0,114">Número Externo?</CheckBox>
+
+                    <Button x:Name="btnDiscar" Content="Discar" HorizontalAlignment="Left" Margin="20,95,0,0" 
+                        IsDefault="True" 
+                        VerticalAlignment="Top" Width="276" Click="btnDiscar_Click" />
+
+                    <Button x:Name="btnDeslogar" Content="Deslogar" HorizontalAlignment="Left" Margin="20,129,0,0" 
+                        VerticalAlignment="Top" Width="276" Click="btnDeslogar_Click" />
+
+                    <ComboBox x:Name="cboIntervalo" Margin="20,196,44,7" DisplayMemberPath="Descricao" 
+                              SelectedValuePath="RamalStatusDetalheId" ItemsSource="{Binding IntervaloInfoList}" 
+                              SelectedItem="{Binding IntervaloInfoAtivo}"
+                              SelectionChanged="cboIntervalo_SelectionChanged"
+                              />
+                    <Label x:Name="lblStatus" HorizontalContentAlignment="Right" Content="Status" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="195"/>
+
+                    <Button x:Name="btnIntervalo" Content="Intervalo" HorizontalAlignment="Left" Margin="20,171,0,0" 
+                        VerticalAlignment="Top" Width="276" Click="btnIntervalo_Click"  />
+                    
+                </Grid>
+            </GroupBox>
+
+            <GroupBox x:Name="RamalChamadaGroup" Header="Chamada Ativa no Ramal" HorizontalAlignment="Left" Margin="0,0,0,0" 
+                  VerticalAlignment="Top" Height="241" Width="352"
+                  Visibility="{Binding IsEmChamada, Converter={StaticResource BoolToVis}}">
+                <Grid>
+                    <Label x:Name="lblEmChamada" 
+                           Content="{Binding EmChamadaCom}" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top"/>
+
+                    <Button x:Name="btnDesligar" Content="Desligar" HorizontalAlignment="Left" Margin="20,60,0,0" 
+                        VerticalAlignment="Top" Width="276" Click="btnDesligar_Click"  />
+                    <Button x:Name="btnEspera" Content="Espera" HorizontalAlignment="Left" Margin="20,125,0,0" 
+                    	VerticalAlignment="Top" Width="276" Click="btnEspera_Click"  />
+                    <Button x:Name="btnRetirarEspera" Content="Retirar Espera" HorizontalAlignment="Left" Margin="20,155,0,0" 
+                    	VerticalAlignment="Top" Width="276" Click="btnRetirarEspera_Click"  />
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</Window>
