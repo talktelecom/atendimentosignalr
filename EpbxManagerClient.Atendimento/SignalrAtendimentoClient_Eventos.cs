@@ -45,6 +45,8 @@ namespace EpbxManagerClient.Atendimento
         public event EventHandler<RamalInfo, ChamadaInfo, Exception> OnDiscaErro;
         public event EventHandler<RamalInfo, Exception> OnAlterarIntervaloTipoErro;
 
+        public event EventHandler<RamalStatusInfo> OnRamalStatusInfo;
+
         /// <summary>
         /// Inscrever-se no Hub signalr para receber os eventos da Telefonia
         /// </summary>
@@ -85,6 +87,14 @@ namespace EpbxManagerClient.Atendimento
             AtendimentoHubProxy.On(nameof(OnConferenciaDiscaErro), CreateHandler(OnConferenciaDiscaErro));
             AtendimentoHubProxy.On(nameof(OnDiscaErro), CreateHandler(OnDiscaErro));
             AtendimentoHubProxy.On(nameof(OnAlterarIntervaloTipoErro), CreateHandler(OnAlterarIntervaloTipoErro));
+
+            SupervisaoHubProxy.On<string, RamalStatusInfo>(Constantes.SupervisaoModelEvento, (modelName, info) =>
+            {
+                if (Constantes.SupervisaoRamalEvento.Equals(modelName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    RaiseEvent(OnRamalStatusInfo, info);
+                }
+            });
         }
     }
 }

@@ -128,5 +128,10 @@ namespace EpbxManagerClient.Atendimento
 
             return AtendimentoHubProxy.Invoke(nameof(Transferir), numero, tipoDiscagem.GetHashCode());
         }
+
+        public Task<IEnumerable<RamalStatusInfo>> ListarRamalStatus()
+        {
+            return SupervisaoHubProxy.Invoke<IEnumerable<RamalStatusInfo>>(nameof(ListarRamalStatus));
+        }
     }
 }

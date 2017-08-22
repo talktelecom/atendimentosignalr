@@ -28,6 +28,8 @@ namespace EpbxManagerClient
         private readonly AtendimentoSignalrClient Atendimento;
         private readonly WindowState State;
 
+        private readonly string NaoLogadoStatus = "Não Logado";
+
         public MainWindow()
         {
             InitializeComponent();
@@ -103,7 +105,7 @@ namespace EpbxManagerClient
                 //Evento de deslogar ramal
                 await Atendimento.Deslogar();
 
-                cboIntervalo.Items.Clear();
+                State.IntervaloInfoList.Clear();
 
                 State.IsLogado = false;
 
@@ -219,12 +221,18 @@ namespace EpbxManagerClient
         //Retorno do Intervalo Selecionado
         private void Atendimento_OnSetIntervaloRamal(object sender, RamalInfo ramal, IntervaloInfo intervalo)
         {
-            if (intervalo.RamalStatusDestinoId == 0) // Destino se entrou em intervalo == 0 se 1 intervalo pendente
+            if(State.IntervaloInfoAtivo == null)
             {
-                if(State.IntervaloInfoAtivo !=null)
-                    lblStatus.Content = State.IntervaloInfoAtivo.Descricao;
+                State.IntervaloInfoAtivo = State.IntervaloInfoList
+                    .FirstOrDefault(i => i.RamalStatusDetalheId == intervalo.RamalStatusDetalheId);
             }
-                
+
+            // Destino se entrou em intervalo == 0 se 1 intervalo pendente
+            if (intervalo.RamalStatusDestinoId == 0
+                && State.IntervaloInfoAtivo != null)
+            {
+                lblStatus.Content = State.IntervaloInfoAtivo.Descricao;
+            }
         }
         
         //Retorno de todos os Status de Intervalos cadastrados
@@ -241,8 +249,6 @@ namespace EpbxManagerClient
             {
                 State.IntervaloInfoList.Add(intervalo);
             }
-            // cboIntervalo.Items.Add(intervalo);
-            //cboIntervalo.Items.Add(new ComboBoxItem { Content = intervalo.Descricao, Tag = intervalo.RamalStatusDetalheId.ToString() });
         }
 
         //Desconexão do Signalr
@@ -318,7 +324,6 @@ namespace EpbxManagerClient
             ShowError(ex);
 
             State.IsLogado = false;
-
         }
 
         private void optCtiIp_Click(object sender, RoutedEventArgs e)
@@ -333,8 +338,23 @@ namespace EpbxManagerClient
             txtIpOrRamal.Text = "";
         }
 
-        private void cboIntervalo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ListarStatusRamais_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                var ramaisStatus = await Atendimento.ListarRamalStatus();
+
+                var quantidadeNaoLogados = ramaisStatus.Count(r => r.Status == NaoLogadoStatus);
+
+                var quantidadeLogados = ramaisStatus.Count(r => r.Status != NaoLogadoStatus);
+                var breakLine = "\n";
+
+                MessageBox.Show($"Quantidade Logados: {quantidadeLogados}{breakLine}Quantidade Ramais Não Logados: {quantidadeNaoLogados}");
+            }
+            catch(Exception ex)
+            {
+                ShowError(ex);
+            }
         }
     }
 }

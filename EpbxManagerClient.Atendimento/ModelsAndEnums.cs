@@ -38,11 +38,16 @@ namespace EpbxManagerClient.Atendimento
         public const string AcceptJsonHeaderValue = "application/json";
 
         public const string AtendimentoHubName = "AtendimentoHub";
+        public const string SupervisaoHubName = "SupervisaoHub";
 
         public const string PropriedadeNumeroRamal = "Ramal";
 
         public const string SignalrMetodoIniciar = "Iniciar";
         public const string SignalrMetodoTerminar = "Terminar";
+        public const string SignalrMetodoParar = "Parar";
+
+        public const string SupervisaoModelEvento = "onModelChanged";
+        public const string SupervisaoRamalEvento = "RamalEvento";
 
         public const string UrlSignal = "signalr";
         public const string UrlWebApi = "api";
@@ -52,6 +57,24 @@ namespace EpbxManagerClient.Atendimento
         public const string ErrorMsgUseLogon = "Necessário usar o método logar antes";
         public const string ErrorMsgUsuarioExpirou = "A autenticação expirou. Use o método logar novamente";
         public const string ErrorMsgArgumentoNull = "O parametro {0} não pode ser nulo ou vazio";
+    }
+
+    internal static class Helper
+    {
+        public static string FormatUrlString(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                throw new ArgumentNullException(nameof(url));
+            }
+
+            if (!url.EndsWith("/"))
+            {
+                url = $"{url}/";
+            }
+
+            return url;
+        }
     }
 
     public delegate void EventHandler<TEventArg1, TEventArg2>(object sender, TEventArg1 arg1, TEventArg2 arg2);
@@ -76,6 +99,37 @@ namespace EpbxManagerClient.Atendimento
         /// </remarks>
         [JsonProperty(Constantes.PropriedadeNumeroRamal)]        
         public int Numero { get; set; }
+    }
+
+    public class RamalStatusInfo
+    {
+        public int RamalId { get; set; }
+
+        public string Descricao { get; set; }
+
+        public string Status { get; set; }
+
+        public int RamalNumero { get; set; }
+
+        public string NomeRamal { get; set; }
+
+        public int EventoOrigemId { get; set; }
+
+        /// <summary>
+        /// Data e hora em que o ramal entrou no Status atual
+        /// </summary>
+        public DateTime DataInicio { get; set; }
+
+        /// <summary>
+        /// Quantidade de chamadas na fila do ramal ou grupo
+        /// </summary>
+        public int QuantidadeFila { get; set; }
+        
+        public bool IsGrupo { get; set; }
+
+        public string Departamento { get; set; }
+
+        public int GrupoId { get; set; }
     }
 
     public enum TipoIntervaloGeralDto

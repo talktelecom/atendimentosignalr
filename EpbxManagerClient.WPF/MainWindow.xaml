@@ -44,7 +44,7 @@
             </GroupBox>
             
             <GroupBox x:Name="RamalLogadoGroup" Header="Ramal Logado" HorizontalAlignment="Left" Margin="0,0,0,0" 
-                  VerticalAlignment="Top" Height="241" Width="352"
+                  VerticalAlignment="Top" Height="367" Width="352"
                   Visibility="{Binding IsLivre, Converter={StaticResource BoolToVis}}">
                 <Grid>
 
@@ -62,16 +62,18 @@
                     <Button x:Name="btnDeslogar" Content="Deslogar" HorizontalAlignment="Left" Margin="20,129,0,0" 
                         VerticalAlignment="Top" Width="276" Click="btnDeslogar_Click" />
 
-                    <ComboBox x:Name="cboIntervalo" Margin="20,196,44,7" DisplayMemberPath="Descricao" 
+                    <ComboBox x:Name="cboIntervalo" Margin="20,166,44,156" DisplayMemberPath="Descricao" 
                               SelectedValuePath="RamalStatusDetalheId" ItemsSource="{Binding IntervaloInfoList}" 
                               SelectedItem="{Binding IntervaloInfoAtivo}"
-                              SelectionChanged="cboIntervalo_SelectionChanged"
                               />
                     <Label x:Name="lblStatus" HorizontalContentAlignment="Right" Content="Status" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="195"/>
 
-                    <Button x:Name="btnIntervalo" Content="Intervalo" HorizontalAlignment="Left" Margin="20,171,0,0" 
+                    <Button x:Name="btnIntervalo" Content="Alterar Intervalo" HorizontalAlignment="Left" Margin="20,194,0,0" 
                         VerticalAlignment="Top" Width="276" Click="btnIntervalo_Click"  />
                     
+                    <Button Content="Quantidade Não Logados" HorizontalAlignment="Left" Margin="20,236,0,0" 
+                            VerticalAlignment="Top" Width="276" Click="ListarStatusRamais_Click" />
+
                 </Grid>
             </GroupBox>
 

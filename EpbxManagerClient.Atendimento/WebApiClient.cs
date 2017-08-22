@@ -27,7 +27,7 @@ namespace EpbxManagerClient.Atendimento
 
         public WebApiClient(string serviceUrl, string oauthClientId, HttpMessageHandler handler)
         {
-            _serviceUri = new Uri(serviceUrl);
+            _serviceUri = new Uri(Helper.FormatUrlString(serviceUrl));
             _handler = handler;
             _oauthClientId = oauthClientId;
         }
@@ -110,7 +110,7 @@ namespace EpbxManagerClient.Atendimento
                 // erro 401 indica preenchimento incorreto do usuario, senha ou clientId
                 if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
-                    throw new Exception(Constantes.ErrorMsgUsuarioSenhaInvalido);
+                    throw new InvalidOperationException(Constantes.ErrorMsgUsuarioSenhaInvalido);
                 }
 
                 // outros códigos de erros indicam problema no servidor ou na rede

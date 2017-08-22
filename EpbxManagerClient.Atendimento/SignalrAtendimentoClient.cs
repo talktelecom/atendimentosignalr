@@ -7,7 +7,6 @@ namespace EpbxManagerClient.Atendimento
 {
     public partial class AtendimentoSignalrClient : IAtendimentoClient
     {
-        //private readonly string _serverUrl;
         private readonly Uri _signalrUri;
         private readonly string _oauthClientId;
 
@@ -25,6 +24,8 @@ namespace EpbxManagerClient.Atendimento
 
         protected virtual IHubProxy AtendimentoHubProxy { get; private set; }
 
+        protected virtual IHubProxy SupervisaoHubProxy { get; private set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -40,7 +41,7 @@ namespace EpbxManagerClient.Atendimento
             // quando a classe for criada a partir da Thread UI, o contexto de sync será preenchido corretamente
             _syncContext = SynchronizationContext.Current;
 
-            var baseUri = new Uri(serviceUrl);
+            var baseUri = new Uri(Helper.FormatUrlString(serviceUrl));
             _signalrUri = new Uri(baseUri, Constantes.UrlSignal);
 
             _oauthClientId = oauthClientId ?? Constantes.AuthorizationDefaultClientId;
@@ -106,6 +107,7 @@ namespace EpbxManagerClient.Atendimento
             SignalrConnection.Reconnected += Connection_Reconnected;
 
             AtendimentoHubProxy = SignalrConnection.CreateHubProxy(Constantes.AtendimentoHubName);
+            SupervisaoHubProxy = SignalrConnection.CreateHubProxy(Constantes.SupervisaoHubName);
 
             PrepareEventsHub();
 
@@ -124,12 +126,14 @@ namespace EpbxManagerClient.Atendimento
             _idPaOrIpOrRamal = idPaOrIpOrRamal;
 
             await AtendimentoHubProxy.Invoke(Constantes.SignalrMetodoIniciar, idPaOrIpOrRamal, tipoLogon);
+            await SupervisaoHubProxy.Invoke(Constantes.SignalrMetodoIniciar);
         }
 
         public virtual async Task Deslogar()
         {
             _stopCalled = true;
             await AtendimentoHubProxy.Invoke(Constantes.SignalrMetodoTerminar);
+            await SupervisaoHubProxy.Invoke(Constantes.SignalrMetodoParar);
             ClearConnection();
         }
 
@@ -203,6 +207,7 @@ namespace EpbxManagerClient.Atendimento
         private void ClearConnection()
         {
             AtendimentoHubProxy = null;
+            SupervisaoHubProxy = null;
             _idPaOrIpOrRamal = null;
             _authInfo = null;
             _timerRefreshToken?.Dispose();

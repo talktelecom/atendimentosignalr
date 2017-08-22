@@ -59,6 +59,7 @@ namespace EpbxManagerClient.Atendimento
         event EventHandler<RamalInfo> OnTerminoEspera;
         event EventHandler<RamalInfo> OnTerminoIntervalo;
         event EventHandler<RamalInfo> OnTerminoNaoDisponivel;
+        event EventHandler<RamalStatusInfo> OnRamalStatusInfo;
 
         Task AlterarIntervaloTipo(int tipoIntervalo);
 
@@ -105,5 +106,7 @@ namespace EpbxManagerClient.Atendimento
         Task TransfereVoiceMail();
 
         Task Transferir(string numero, TipoDiscagem tipoDiscagem);
+
+        Task<IEnumerable<RamalStatusInfo>> ListarRamalStatus();
     }
 }
